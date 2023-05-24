@@ -1,0 +1,15 @@
+@startuml
+Client -> ProductService: traceId: TRC1, spanId: SPN1
+ProductService -> StockService: traceId: TRC1, spanId: SPN2
+ProductService <-- StockService: stock
+
+ProductService -> ImageService: traceId: TRC1, spanId: SPN3
+ProductService <-- ImageService: images
+
+ProductService -> ManufacturerService: traceId: TRC1, spanId: SPN4
+ManufacturerService -> CountryService: traceId: TRC1, spanId: SPN5
+ManufacturerService <-- CountryService: country
+ProductService <-- ManufacturerService: manufacturer
+
+Client <-- ProductService: product
+@enduml

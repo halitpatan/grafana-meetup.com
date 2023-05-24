@@ -1,0 +1,66 @@
+#https://grafana.com/docs/loki/latest/clients/promtail/configuration/
+# Configures the server for Promtail.
+# The server block configures Promtail’s behavior as an HTTP server:
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+# Describes how Promtail connects to multiple instances
+# of Grafana Loki, sending logs to each.
+# WARNING: If one of the remote Loki servers fails to respond or responds
+# with any error which is retryable, this will impact sending logs to any
+# other configured remote Loki servers.  Sending is done on a single thread!
+# It is generally recommended to run multiple Promtail clients in parallel
+# if you want to send to multiple remote Loki instances.
+# The clients block configures how Promtail connects to instances of Loki:
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+# Describes how to save read file offsets to disk
+positions:
+  filename: /tmp/positions.yaml
+
+# https://prometheus.io/docs/prometheus/latest/configuration/configuration/#docker_sd_config
+scrape_configs:
+  - job_name: docker
+    pipeline_stages:
+      - docker: {}
+      - json:
+          expressions:
+            stream: stream
+            attrs: attrs
+            tag: attrs.tag
+    docker_sd_configs:
+      - host: "unix:///var/run/docker.sock"
+        refresh_interval: 60s
+#        filters:
+#          - name: label
+#            values: [ "logging=promtail" ]
+    relabel_configs:
+      - source_labels: [ '__meta_docker_container_id' ]
+        target_label: 'container_id'
+      - source_labels: [ '__meta_docker_container_name' ]
+        regex: '/(.*)'
+        target_label: 'container_name'
+#      - source_labels: [ '__meta_docker_container_network_mode' ]
+#        target_label: 'network_mode'
+##      - source_labels: [ '__meta_docker_container_label_<labelname>' ]
+#      - source_labels: [ '__meta_docker_network_id' ]
+#        target_label: 'network_id'
+#      - source_labels: [ '__meta_docker_network_name' ]
+#        target_label: 'network_name'
+#      - source_labels: [ '__meta_docker_network_ingress' ]
+#        target_label: 'network_ingress'
+#      - source_labels: [ '__meta_docker_network_internal' ]
+#        target_label: 'network_internal'
+##      - source_labels: [ '__meta_docker_network_label_<labelname>' ]
+#      - source_labels: [ '__meta_docker_network_scope' ]
+#        target_label: 'network_scope'
+#      - source_labels: [ '__meta_docker_network_ip' ]
+#        target_label: 'network_ip'
+#      - source_labels: [ '__meta_docker_port_private' ]
+#        target_label: 'port_private'
+#      - source_labels: [ '__meta_docker_port_public' ]
+#        target_label: 'port_public'
+#      - source_labels: [ '__meta_docker_port_public_ip' ]
+#        target_label: 'port_public_ip'

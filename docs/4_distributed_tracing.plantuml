@@ -1,0 +1,14 @@
+@startmindmap
+* TraceId : TRC1 \n SpanId : SPN1
+** TraceId : TRC1 \n SpanId : SPN2
+*** TraceId : TRC1 \n SpanId : SPN3
+*** TraceId : TRC1 \n SpanId : SPN4
+*** TraceId : TRC1 \n SpanId : SPN5
+*** TraceId : TRC1 \n SpanId : SPN6
+** TraceId : TRC1 \n SpanId : SPN7
+** TraceId : TRC1 \n SpanId : SPN8
+** TraceId : TRC1 \n SpanId : SPN9
+** TraceId : TRC1 \n SpanId : SPN10
+*** TraceId : TRC1 \n SpanId : SPN11
+*** TraceId : TRC1 \n SpanId : SPN12
+@endmindmap

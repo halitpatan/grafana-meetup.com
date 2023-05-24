@@ -1,0 +1,15 @@
+@startuml
+Client -> ProductService: getProduct(productId)
+ProductService -> StockService: getStock(productId)
+ProductService <-- StockService: stock
+
+ProductService -> ImageService: getImages(productId)
+ProductService <-- ImageService: images
+
+ProductService -> ManufacturerService: getManufacturer(manufaturerId)
+ManufacturerService -> CountryService: getCountry(countryId)
+ManufacturerService <-- CountryService: country
+ProductService <-- ManufacturerService: manufacturer
+
+Client <-- ProductService: product
+@enduml

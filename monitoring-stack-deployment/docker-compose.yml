@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+
+  microservices:
+    image: microservices-meetup.com
+    container_name: microservices-meetup.com
+    build:
+      context: ../
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+  #    labels:
+  #      logging: "promtail"
+  #      logging_jobname: "docker"
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail-meetup.com
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+      - promtail-data:/var/log
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers
+    ports:
+      - "9080:9080"
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki-meetup.com
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/loki-config.yaml
+
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana-meetup.com
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector-meetup.com
+    command: [ "--config=/etc/otel-collector-config.yaml", "" ]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - 1888:1888 # pprof extension
+      - 8888:8888 # Prometheus metrics exposed by the collector itself
+      - 8889:8889 # Prometheus exporter metrics
+      - 13133:13133 # health_check extension
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+      - 55679:55679 # zpages extension
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo-meetup.com
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./tempo.yaml:/etc/tempo.yaml
+      - tempo-data:/tmp/tempo
+    ports:
+      - 14268  # jaeger ingest
+      - 3200   # tempo
+      - 4317  # otlp grpc
+      - 4318  # otlp http
+      - 9411   # zipkin
+
+volumes:
+  tempo-data:
+  grafana-data:
+  promtail-data:
