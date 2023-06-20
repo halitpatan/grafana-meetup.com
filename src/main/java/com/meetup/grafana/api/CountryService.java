@@ -21,8 +21,10 @@ public class CountryService {
     @GetMapping("/{countryId}")
     public ResponseEntity<CountryDTO> getCountry(@PathVariable Long countryId) throws InterruptedException {
         log.info("getCountry called -> countryId: {}", countryId);
-        long sleepTime = new Random().nextLong(5000, 10000);
+
+        long sleepTime = new Random().nextLong(4000, 7000);
         Thread.sleep(sleepTime);
+
         return new ResponseEntity<>(CountryDTO.builder()
                 .countryId(countryId)
                 .name("Country " + countryId)

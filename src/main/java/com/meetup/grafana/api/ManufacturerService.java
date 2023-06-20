@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/manufacturers")
@@ -25,14 +27,14 @@ public class ManufacturerService {
     public ResponseEntity<ManufacturerDTO> getManufacturer(@PathVariable Long manufacturerId) throws InterruptedException {
         log.info("getManufacturer called -> manufacturerId: {}", manufacturerId);
 
-        long sleepTime = new Random().nextLong(5000, 10000);
-        Thread.sleep(sleepTime);
-
         Long countryId = new Random().nextLong(1,1000);
         CountryDTO countryDTO = webClient.get()
                 .uri("http://localhost:8080/api/countries/"+countryId)
                 .retrieve()
                 .bodyToMono(CountryDTO.class).block();
+
+        long sleepTime = new Random().nextLong(4000, 7000);
+        Thread.sleep(sleepTime);
 
         ManufacturerDTO manufacturerDTO = ManufacturerDTO.builder()
                 .manufacturerId(manufacturerId)

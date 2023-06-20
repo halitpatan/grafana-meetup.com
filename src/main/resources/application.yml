@@ -5,18 +5,7 @@ server:
 spring:
   application:
     name: microservices-meetup.com
-
 management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'
-  metrics:
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true
-    tags:
-      application: ${spring.application.name}
   tracing:
     sampling:
       probability: 1.0

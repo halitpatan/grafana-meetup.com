@@ -32,6 +32,7 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
+<!--		contains micrometer-observation and micrometer-core libraries-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
